@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import axios from 'axios'
-import Calendar from './components/Calendar'
 import moment from 'moment'
 import 'moment/locale/ar'
 import 'moment/locale/fr'
@@ -31,25 +30,8 @@ const App = () => {
         //   }
         // ]
         ()
-    const timeOrigin = [
-        { time: '8:00-8:30', available: true },
-        { time: '8:30-9:00', available: true },
-        { time: '9:00-9:30', available: true },
-        { time: '9:30-10:00', available: true },
-        { time: '10:00-10:30', available: true },
-        { time: '10:30-11:00', available: true },
-        { time: '11:00-11:30', available: true },
-        { time: '11:30-12:00', available: true },
-        { time: '13:00-13:30', available: true },
-        { time: '13:30-14:00', available: true },
-        { time: '14:00-14:30', available: true },
-        { time: '14:30-15:00', available: true },
-        { time: '15:00-15:30', available: true },
-        { time: '15:30-16:00', available: true },
-        { time: '16:00-16:30', available: true },
-        { time: '16:30-17:00', available: true }
-    ]
-    const [time, setTime] = React.useState(timeOrigin)
+
+    const [time, setTime] = React.useState()
     const [timeInable, setTimeInable] = React.useState()
     const [selectedtime, setSelectedTime] = React.useState(new Date())
     const [DayInable, setDayInable] = React.useState([])
@@ -58,6 +40,14 @@ const App = () => {
             //   await axios.get('http://localhost:5000/elbou').then(res => {
             //     setData(res.data)
             //   })
+            axios.get(`http://localhost:5000/Day`).then(res => {
+                console.log('elbou', res.data)
+                setData(res.data)
+            })
+            axios.get(`http://localhost:5000/getTimes`).then(res => {
+                console.log('times', res.data)
+                setTime(res.data)
+            })
             axios.get(`http://localhost:5000/getMyDate/12345678`).then(res => {
                 console.log('result====>', res)
                 setSelectedDay({
@@ -65,9 +55,23 @@ const App = () => {
                     date: res.data ? new Date(res.data.Date) : new Date(),
                     timeDesiable: []
                 })
-                console.log("hello Date", new Date(res.data.Date).setHours(0, 0, 0, 0), new Date().setHours(0, 0, 0, 0))
-                setSelectedTime(res.data ? new Date(res.data.Date).setHours(0, 0, 0, 0) >= new Date().setHours(0, 0, 0, 0) && res.data.time : '')
-                setTimeOriginal(res.data ? new Date(res.data.Date).setHours(0, 0, 0, 0) >= new Date().setHours(0, 0, 0, 0) && res.data.time : '')
+                console.log(
+                    'hello Date',
+                    new Date(res.data.Date).setHours(0, 0, 0, 0),
+                    new Date().setHours(0, 0, 0, 0)
+                )
+                setSelectedTime(
+                    res.data ?
+                    new Date(res.data.Date).setHours(0, 0, 0, 0) >=
+                    new Date().setHours(0, 0, 0, 0) && res.data.time :
+                    ''
+                )
+                setTimeOriginal(
+                    res.data ?
+                    new Date(res.data.Date).setHours(0, 0, 0, 0) >=
+                    new Date().setHours(0, 0, 0, 0) && res.data.time :
+                    ''
+                )
                 setOriginalDays(res.data ? new Date(res.data.Date) : '')
             })
             axios.get(`http://localhost:5000/getDayInable`).then(res => {
@@ -92,33 +96,7 @@ const App = () => {
 
     React.useEffect(() => {
         async function fetchData() {
-            //   await axios.get('http://localhost:5000/elbou').then(res => {
-            //     setData(res.data)
-            //   })
-            var today = new Date()
-
-            var year = today.getFullYear()
-            var month = today.getMonth()
-            var date = today.getDate()
-
-            let tab = []
-            for (var i = 0; i < 15; i++) {
-                var day = new Date(year, month, date + i)
-                if (day.getDay() === 6 || day.getDay() === 0) {
-                    const item = {
-                        date: day,
-                        available: false
-                    }
-                    tab.push(item)
-                } else {
-                    const item = {
-                        date: day,
-                        available: true,
-                        timeDesiable: []
-                    }
-                    tab.push(item)
-                }
-            }
+            const tab = [...data]
             tab &&
                 tab.map((r, i) => {
                     DayInable.length > 0 &&
@@ -178,6 +156,7 @@ const App = () => {
             })
             // console.log("ici c est la blem",selectedDay)
         selectedDay &&
+            time &&
             time.map(r => {
                 if (
                     selectedDay &&
@@ -208,25 +187,24 @@ const App = () => {
             })
 
         console.log('selectedDay', selectedDay, tabTime)
-    }, [selectedDay, timeInable, timeUser])
+    }, [selectedDay, timeInable, timeUser, originalTime])
     return ( <
         div style = {
             {
                 display: 'flex',
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-                width: "100%",
+                width: '100%'
             }
         } >
-
         <
         div style = {
             {
                 display: 'flex',
                 width: '55%',
                 flexDirection: 'row',
-                justifyContent: "center",
-                alignItems: "center",
+                justifyContent: 'center',
+                alignItems: 'center',
                 columnGap: '5px',
                 flexWrap: 'wrap',
                 borderRadius: '5px',
@@ -314,8 +292,7 @@ const App = () => {
                         } >
                         <
                         div style = {
-                            {}
-                        } >
+                            {} } >
                         <
                         span style = {
                             {
@@ -355,7 +332,7 @@ const App = () => {
                     )
                 })
         } { ' ' } <
-        /div> <
+        /div>{' '} <
         div style = {
             { width: '45%' } } >
         <
@@ -364,14 +341,14 @@ const App = () => {
                 width: '100%',
                 display: 'flex',
                 flexDirection: 'row',
-                justifyContent: "center",
-                alignItems: "center",
+                justifyContent: 'center',
+                alignItems: 'center',
                 gap: '5px',
                 flexWrap: 'wrap',
                 columnGap: '5px',
                 flexWrap: 'wrap',
                 borderRadius: '5px',
-                backgroundColor: 'white',
+                backgroundColor: 'white'
             }
         } >
         { ' ' } {
@@ -383,8 +360,8 @@ const App = () => {
                         style = {
                             {
                                 fontWeight: 'bold',
-                                width: "171px",
-                                height: "54px",
+                                width: '171px',
+                                height: '54px',
                                 display: 'flex',
                                 justifyContent: 'center',
                                 alignItems: 'center'
@@ -395,7 +372,7 @@ const App = () => {
                                 selectedtime == q.time ||
                                 (new Date(selectedDay).getTime() ==
                                     new Date(originalDays).getTime() &&
-                                    timeOrigin == q.time) ?
+                                    originalTime == q.time) ?
                                 'selectedTime' :
                                 'autreTime'
                         } >
@@ -404,24 +381,29 @@ const App = () => {
                         /div>
                     )
                 })
-        } <
-        /div> <
+        } { ' ' } <
+        /div>{' '} <
         div style = {
-            { width: "100%", display: "flex", justifyContent: "center", marginTop: "10px" } } >
+            {
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                marginTop: '10px'
+            }
+        } >
         <
         button style = {
             {
                 cursor: 'pointer',
-                fontWeight: "bold",
-                fontSize: "20px",
+                fontWeight: 'bold',
+                fontSize: '20px',
                 // marginLeft: '20px',
-                border: "none",
-                width: "188px",
-                height: "60px",
+                border: 'none',
+                width: '188px',
+                height: '60px',
                 background: '#EA0000',
                 color: 'white',
-                bottom: "150px"
-
+                bottom: '150px'
             }
         }
         onClick = {
@@ -440,10 +422,8 @@ const App = () => {
         { ' ' }
         envoyer { ' ' } <
         /button>{' '} <
-        /div> <
-        /div>
-
-        <
+        /div>{' '} <
+        /div>{' '} <
         /div>
     )
 }
