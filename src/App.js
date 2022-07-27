@@ -187,7 +187,7 @@ const App = () => {
             })
 
         console.log('selectedDay', selectedDay, tabTime)
-    }, [selectedDay, timeInable, timeUser, originalTime])
+    }, [selectedDay, timeInable, timeUser, originalTime, time])
     return ( <
         div style = {
             {
