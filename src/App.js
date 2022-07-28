@@ -12,7 +12,7 @@ const App = () => {
 
         const [data, setData] = React.useState('')
         const [selectedDay, setSelectedDay] = React.useState()
-        const [elbou, setElbou] = React.useState()
+        const [timeToShow, setTimeToShow] = React.useState()
         const [timeUser, setTimeUser] = React
             .useState
             //   [
@@ -33,7 +33,7 @@ const App = () => {
 
         const [time, setTime] = React.useState()
         const [timeInable, setTimeInable] = React.useState()
-        const [selectedtime, setSelectedTime] = React.useState(new Date())
+        const [selectedtime, setSelectedTime] = React.useState()
         const [DayInable, setDayInable] = React.useState([])
         React.useEffect(() => {
             async function fetchData() {
@@ -183,7 +183,7 @@ const App = () => {
                         ''
                     )
 
-                    setElbou(tabTime)
+                    setTimeToShow(tabTime)
                 })
 
             console.log('selectedDay', selectedDay, tabTime)
@@ -365,8 +365,8 @@ const App = () => {
                 }
             } >
             { ' ' } {
-                elbou &&
-                    elbou.map(q => {
+                timeToShow &&
+                    timeToShow.map(q => {
                         return ( <
                             div onClick = {
                                 () => setSelectedTime(q.time) }
@@ -395,45 +395,8 @@ const App = () => {
                         )
                     })
             } { ' ' } <
-            /div>{' '} {
-                /* <div
-                          style={{
-                            width: '100%',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            marginTop: '10px'
-                          }}
-                        >
-                          <button
-                            style={{
-                              cursor: 'pointer',
-                              fontWeight: 'bold',
-                              fontSize: '20px',
-                              // marginLeft: '20px',
-                              border: 'none',
-                              width: '188px',
-                              height: '60px',
-                              background: '#EA0000',
-                              color: 'white',
-                              bottom: '150px'
-                            }}
-                            onClick={async () => {
-                              await axios
-                                .post('http://localhost:5000/create', {
-                                  date: selectedDay.date,
-                                  time: selectedtime,
-                                  userId: '12345678'
-                                })
-                                .then(res => {
-                                  console.log('res==>', res)
-                                })
-                            }}
-                          >
-                            {' '}
-                            envoyer{' '}
-                          </button>{' '}
-                        </div> */
-            }
+            /div>{' '}
+
 
             <
             div >
@@ -443,6 +406,9 @@ const App = () => {
 
             <
             /div> <
+            div style = {
+                { width: "100%", display: "flex", justifyContent: "space-between" } } >
+            <
             div style = {
                 { width: "100%" } } >
             <
@@ -472,7 +438,7 @@ const App = () => {
                     .locale('fr')
                     .format('YYYY')
             } { ' ' } <
-            /span>{console.log("selectedTime========",selectedtime)} <
+            /span> <
             span >
 
             {
@@ -481,6 +447,51 @@ const App = () => {
 
                 <
                 /span>{' '} <
+                /div> <
+                div
+                style = {
+                    {
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        marginTop: '10px'
+                    }
+                } >
+                <
+                button
+                style = {
+                    {
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                        fontSize: '20px',
+                        // marginLeft: '20px',
+                        border: 'none',
+                        width: '188px',
+                        height: '60px',
+                        background: '#EA0000',
+                        color: 'white',
+                        bottom: '150px'
+                    }
+                }
+                onClick = {
+                    async() => {
+                        await axios
+                            .post('http://localhost:5000/create', {
+                                date: selectedDay.date,
+                                time: selectedtime,
+                                userId: '12345678'
+                            })
+                            .then(res => {
+                                console.log('res==>', res)
+                            })
+                    }
+                } >
+                { ' ' }
+                تأكيد { ' ' } <
+                /button>{' '} <
+                /div>
+
+                <
                 /div> <
                 /div>
             )
